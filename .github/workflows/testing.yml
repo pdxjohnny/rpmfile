@@ -19,3 +19,12 @@ jobs:
     - name: Test
       run: |
         python setup.py test
+        if [ "x${{ matrix.python-version }}" == "x2.7" ]; then
+          cd "$(mktemp -d)"
+          curl -sSL 'https://bazaar.launchpad.net/~proyvind/pyliblzma/trunk/tarball' | tar xvz
+          python -m pip install --prefix=~/.local '~proyvind/pyliblzma/trunk/'
+          cd -
+        fi
+    - name: Test
+      run: |
+        python setup.py test

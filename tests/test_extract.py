@@ -10,6 +10,12 @@ try:
 except ImportError:
     from urllib.request import urlopen
 
+try:
+    import lzma
+    HAS_LZMA = True
+except ImportError:
+    HAS_LZMA = False
+
 import rpmfile
 
 def download(url, rpmname):
@@ -40,9 +46,7 @@ class TempDirTest(unittest.TestCase):
         shutil.rmtree(cls.tempdir)
         os.chdir(cls.prevdir)
 
-    @unittest.skipUnless(sys.version_info.major >= 3 \
-                            and sys.version_info.minor >= 3,
-                         'Need lzma module')
+    @unittest.skipUnless(HAS_LZMA, 'Need lzma module')
     @download('https://download.clearlinux.org/releases/10540/clear/x86_64/os/Packages/sudo-setuid-1.8.17p1-34.x86_64.rpm', 'sudo.rpm')
     def test_lzma_sudo(self, rpmpath):
         with rpmfile.open(rpmpath) as rpm:
